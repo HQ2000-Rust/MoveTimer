@@ -7,47 +7,35 @@ use xilem::{
     palette::css::WHITE,
     style::Style,
     view::{
-        Axis, FlexExt, FlexSpacer, ZStackExt, button, flex, flex_col, flex_row, label,
-        progress_bar, text_button,
+        Axis, FlexExt, FlexSpacer, GridExt, GridParams, ZStackExt, button, flex, flex_col,
+        flex_row, grid, label, progress_bar, text_button,
     },
 };
 
 pub(crate) fn time_view(total: Duration, progress: Duration) -> impl WidgetView<AppData> + use<> {
-    let relative_progress = total.as_millis() as f64 / progress.as_millis() as f64;
+    let relative_progress = if progress == Duration::ZERO {
+        0f64
+    } else {
+        progress.as_millis() as f64 / total.as_millis() as f64
+    };
 
     //FIXME
-    assert!(relative_progress < 1.);
+    debug_assert!(relative_progress < 1.);
 
-
-    
-    flex(
-        Axis::Vertical,
+    grid(
         (
-            progress_bar(Some(relative_progress)),
-            
-            flex_row((
-                label(format_as_secs_minutes_and_hours(progress))
-                    .text_alignment(TextAlign::Start)
-                    .text_size(25.),
-                   
-
-
-
-                FlexSpacer::Flex(1.),
-                label(
-                    "0s"//format_as_secs_minutes_and_hours(total)
-                )
+            progress_bar(Some(relative_progress)).grid_item(GridParams::new(0, 0, 3, 1)),
+            label(format_as_secs_minutes_and_hours(progress))
+                .text_alignment(TextAlign::Start)
+                .text_size(25.)
+                .grid_item(GridParams::new(0, 1, 1, 1)),
+            label(format_as_secs_minutes_and_hours(total))
                 .text_alignment(TextAlign::End)
-                .text_size(25.).flex(0.5),
-                
-
-                //.flex(0.5),
-            ))
-            .main_axis_alignment(xilem::view::MainAxisAlignment::Center)
-            .cross_axis_alignment(xilem::view::CrossAxisAlignment::Center)
-            .must_fill_major_axis(true)
-            //.flex(2.0),
+                .text_size(25.)
+                .grid_item(GridParams::new(2, 1, 1, 1)),
         ),
+        3,
+        2,
     )
 }
 
