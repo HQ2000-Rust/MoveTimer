@@ -1,3 +1,6 @@
+use std::time::Duration;
+use std::sync::Arc;
+
 pub(crate) fn format_as_secs_minutes_and_hours(duration: Duration) -> impl Into<Arc<str>> {
     let total_secs = duration.as_secs();
 
