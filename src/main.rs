@@ -18,7 +18,7 @@ use data::AppData;
 
 use crate::time_view::time_view;
 
-const TICK_RESOLUTION: Duration = Duration::from_millis(100);
+const TICK: Duration = Duration::from_millis(100);
 
 #[derive(Debug)]
 struct Tick;
@@ -47,7 +47,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
         task(
             |proxy| async move {
                 loop {
-                    tokio::time::sleep(TICK_RESOLUTION).await;
+                    tokio::time::sleep(TICK).await;
                     if let Ok(()) = proxy.message(Tick) {
                     } else {
                         break;
@@ -56,7 +56,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
             },
             |data: &mut AppData, _msg| {
                 if !data.paused {
-                    data.advance_timer_by(TICK_RESOLUTION);
+                    data.advance_timer_by(TICK);
                 }
             },
         )
