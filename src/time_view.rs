@@ -4,7 +4,12 @@ use crate::data::AppData;
 use xilem::{
     TextAlign, WidgetView,
     masonry::properties::types::Length,
-    view::{FlexExt, FlexSpacer, flex_col, flex_row, label, progress_bar},
+    palette::css::WHITE,
+    style::Style,
+    view::{
+        Axis, FlexExt, FlexSpacer, ZStackExt, button, flex, flex_col, flex_row, label,
+        progress_bar, text_button,
+    },
 };
 
 pub(crate) fn time_view(total: Duration, progress: Duration) -> impl WidgetView<AppData> + use<> {
@@ -13,19 +18,37 @@ pub(crate) fn time_view(total: Duration, progress: Duration) -> impl WidgetView<
     //FIXME
     assert!(relative_progress < 1.);
 
-    flex_col((
-        progress_bar(Some(relative_progress)),
-        flex_row((
-            label(format_as_secs_minutes_and_hours(progress))
-                .text_alignment(TextAlign::Start)
-                .text_size(25.)
-                .flex(0.5),
-            label(format_as_secs_minutes_and_hours(total))
+
+    
+    flex(
+        Axis::Vertical,
+        (
+            progress_bar(Some(relative_progress)),
+            
+            flex_row((
+                label(format_as_secs_minutes_and_hours(progress))
+                    .text_alignment(TextAlign::Start)
+                    .text_size(25.),
+                   
+
+
+
+                FlexSpacer::Flex(1.),
+                label(
+                    "0s"//format_as_secs_minutes_and_hours(total)
+                )
                 .text_alignment(TextAlign::End)
-                .text_size(25.)
-                .flex(0.5),
-        )),
-    ))
+                .text_size(25.).flex(0.5),
+                
+
+                //.flex(0.5),
+            ))
+            .main_axis_alignment(xilem::view::MainAxisAlignment::Center)
+            .cross_axis_alignment(xilem::view::CrossAxisAlignment::Center)
+            .must_fill_major_axis(true)
+            //.flex(2.0),
+        ),
+    )
 }
 
 fn format_as_secs_minutes_and_hours(duration: Duration) -> impl Into<Arc<str>> {
@@ -51,6 +74,6 @@ fn format_as_secs_minutes_and_hours(duration: Duration) -> impl Into<Arc<str>> {
     if secs == 0 && hours == 0 && mins == 0 {
         "0s".to_string()
     } else {
-        format!("{} {} {}",fmt(hours, "h"), fmt(mins, "m"), fmt(secs, "s"))
+        format!("{} {} {}", fmt(hours, "h"), fmt(mins, "m"), fmt(secs, "s"))
     }
 }
