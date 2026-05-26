@@ -13,6 +13,7 @@ use xilem::{EventLoop, TextAlign, WidgetView, WindowOptions, Xilem, tokio};
 
 pub(crate) mod data;
 pub(crate) mod time_view;
+pub(crate) mod utils;
 
 use data::AppData;
 
