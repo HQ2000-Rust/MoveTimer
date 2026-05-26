@@ -51,6 +51,6 @@ fn format_as_secs_minutes_and_hours(duration: Duration) -> impl Into<Arc<str>> {
     if secs == 0 && hours == 0 && mins == 0 {
         "0s".to_string()
     } else {
-        format!("{} {} {}", fmt(secs, "s"), fmt(mins, "m"), fmt(hours, "h"))
+        format!("{} {} {}",fmt(hours, "h"), fmt(mins, "m"), fmt(secs, "s"))
     }
 }
