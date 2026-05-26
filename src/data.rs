@@ -15,4 +15,14 @@ impl AppData {
             paused: true,
         }
     }
+
+    pub(crate) fn advance_timer_by(&mut self, duration: Duration) {
+        let new_progress = self.progress + duration;
+
+        self.progress = if new_progress > self.total {
+            self.total
+        } else {
+            new_progress
+        }
+    }
 }
