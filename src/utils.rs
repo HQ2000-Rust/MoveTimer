@@ -1,5 +1,5 @@
-use std::time::Duration;
 use std::sync::Arc;
+use std::time::Duration;
 
 pub(crate) fn format_as_secs_minutes_and_hours(duration: Duration) -> String {
     let total_secs = duration.as_secs();
@@ -24,6 +24,7 @@ pub(crate) fn format_as_secs_minutes_and_hours(duration: Duration) -> String {
     if secs == 0 && hours == 0 && mins == 0 {
         "0s".to_string()
     } else {
-        format!("{} {} {}", fmt(hours, "h"), fmt(mins, "m"), fmt(secs, "s"))
+        //cheating...
+        format!("{}{}{}", fmt(hours, "h "), fmt(mins, "m "), fmt(secs, "s"))
     }
 }
