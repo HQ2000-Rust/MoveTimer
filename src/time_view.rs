@@ -1,4 +1,4 @@
-use std::{fmt::format, sync::Arc, time::Duration};
+use std::{sync::Arc, time::Duration};
 
 use crate::data::AppData;
 use xilem::{
@@ -41,11 +41,16 @@ fn format_as_secs_minutes_and_hours(duration: Duration) -> impl Into<Arc<str>> {
 
     let hours = (remaining_mins / 60) as u64;
 
-    //not the final form
-    match (secs==0, mins==0, hours==0) {
-        //0s fallback
-        (_,false, false) => format!("{}s", secs),
-        (_, true, false) => format!("{}s {}m", secs, mins),
-        (_, _, true) => format!("{}s {}m {}h", secs, mins, hours),
+    let fmt = |n: u64, suff: &str| {
+        if n != 0 {
+            format!("{}{}", n.to_string(), suff)
+        } else {
+            String::new()
+        }
+    };
+    if secs == 0 && hours == 0 && mins == 0 {
+        "0s".to_string()
+    } else {
+        format!("{} {} {}", fmt(secs, "s"), fmt(mins, "m"), fmt(hours, "h"))
     }
 }
