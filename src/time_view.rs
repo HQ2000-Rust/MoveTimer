@@ -20,7 +20,7 @@ pub(crate) fn time_view(total: Duration, progress: Duration) -> impl WidgetView<
     };
 
     //FIXME
-    debug_assert!(relative_progress < 1.);
+    debug_assert!(relative_progress <= 1.);
 
     grid(
         (
