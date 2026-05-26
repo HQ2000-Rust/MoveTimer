@@ -38,5 +38,3 @@ pub(crate) fn time_view(total: Duration, progress: Duration) -> impl WidgetView<
         2,
     )
 }
-
-

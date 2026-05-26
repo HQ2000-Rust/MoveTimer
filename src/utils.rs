@@ -1,7 +1,7 @@
 use std::time::Duration;
 use std::sync::Arc;
 
-pub(crate) fn format_as_secs_minutes_and_hours(duration: Duration) -> impl Into<Arc<str>> {
+pub(crate) fn format_as_secs_minutes_and_hours(duration: Duration) -> String {
     let total_secs = duration.as_secs();
 
     let secs = total_secs % 60;
