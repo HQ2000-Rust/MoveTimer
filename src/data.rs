@@ -18,7 +18,7 @@ impl AppData {
             total: duration,
             paused: true,
             notif_sent: false,
-            tokio_runtime: Runtime::new()?
+            tokio_runtime: Runtime::new()?,
         })
     }
 
@@ -30,6 +30,5 @@ impl AppData {
         } else {
             new_progress
         };
-
     }
 }

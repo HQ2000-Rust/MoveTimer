@@ -11,7 +11,6 @@ use xilem::masonry::vello::wgpu::wgt::error;
 use crate::utils::format_as_secs_minutes_and_hours;
 
 pub(crate) async fn move_notif(duration_elapsed: Duration) -> notify_rust::error::Result<()> {
-    
     let body = format!(
         "Move a bit!\n({} elapsed)",
         format_as_secs_minutes_and_hours(duration_elapsed)
@@ -32,8 +31,7 @@ pub(crate) async fn move_notif(duration_elapsed: Duration) -> notify_rust::error
 
     // the handle could be used for actions, but there aren't any at the moment
     #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-    let handle = notif
-        .show_async().await?;
+    let handle = notif.show_async().await?;
     handle.on_close(|reason| info!("closed: {:?}", reason));
 
     Ok(())

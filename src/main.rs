@@ -37,39 +37,36 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                     .grid_item(GridParams::new(0, 0, 3, 1)),
                 time_view(data.total, data.progress).grid_item(GridParams::new(0, 1, 3, 1)),
                 button(
-                    label(match (data.paused, data.total==data.progress) {
+                    label(match (data.paused, data.total == data.progress) {
                         (true, false) => "Resume",
                         (_, true) => "Reset",
                         (false, false) => "Pause",
                     }),
                     |data_: &mut AppData| {
-                        match (data_.paused, data_.total==data_.progress) {
+                        match (data_.paused, data_.total == data_.progress) {
                             (false, true) => {
-                                data_.paused=true;
-                                data_.progress=Duration::ZERO;
-                                data_.notif_sent=false;
+                                data_.paused = true;
+                                data_.progress = Duration::ZERO;
+                                data_.notif_sent = false;
                             }
                             (_, false) => {
-                                data_.paused=!data_.paused;
+                                data_.paused = !data_.paused;
                             }
                             //possible edge case, handled explicitly (future changes!!)
                             // (maybe just remove this?)
                             (true, true) => {
-                                data_.paused=true;
-                                data_.progress=Duration::ZERO;
-                                data_.notif_sent=false;
-
+                                data_.paused = true;
+                                data_.progress = Duration::ZERO;
+                                data_.notif_sent = false;
                             }
                         };
                     },
                 )
                 .grid_item(GridParams::new(0, 7, 3, 1)),
-                
             ),
             3,
             8,
         ),
-
         // FIXME: always ticking, even when finished/pausing
         // clean solution?
         data.paused.not().then(|| {
@@ -88,8 +85,8 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                         data.advance_timer_by(TICK);
                         if data.total == data.progress && !data.notif_sent {
                             //TODO: resend if an error occurs?
-                            
-                            let _result= data.tokio_runtime.spawn(notif::move_notif(data.total));
+
+                            let _result = data.tokio_runtime.spawn(notif::move_notif(data.total));
                             data.notif_sent = true;
                         }
                     }
