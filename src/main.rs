@@ -6,13 +6,14 @@ use xilem::palette::css::{BLACK, WHITE};
 use xilem::style::{Background, Padding, Style};
 use xilem::view::{
     FlexSpacer, GridExt, GridParams, Label, Task, button, flex, flex_col, grid, label, task,
-    text_button,
+    text_button, text_input,
 };
 use xilem::winit::error::EventLoopError;
 use xilem::{EventLoop, TextAlign, WidgetView, WindowOptions, Xilem, tokio};
 
 pub(crate) mod data;
 pub(crate) mod notif;
+pub(crate) mod time_input;
 pub(crate) mod time_view;
 pub(crate) mod utils;
 
@@ -41,7 +42,8 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                         (true, false) => "Resume",
                         (_, true) => "Reset",
                         (false, false) => "Pause",
-                    }),
+                    })
+                    .text_size(20.),
                     |data_: &mut AppData| {
                         match (data_.paused, data_.total == data_.progress) {
                             (false, true) => {

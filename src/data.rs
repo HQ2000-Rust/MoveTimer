@@ -2,6 +2,8 @@ use std::time::Duration;
 
 use xilem::tokio::runtime::Runtime;
 
+pub(crate) const DEFAULT_DURATION: Duration = Duration::from_mins(15);
+
 #[derive(Debug)]
 pub(crate) struct AppData {
     pub(crate) progress: Duration,
@@ -9,6 +11,9 @@ pub(crate) struct AppData {
     pub(crate) paused: bool,
     pub(crate) notif_sent: bool,
     pub(crate) tokio_runtime: Runtime,
+    pub(crate) hour_input: String,
+    pub(crate) min_input: String,
+    pub(crate) sec_input: String,
 }
 
 impl AppData {
@@ -19,6 +24,9 @@ impl AppData {
             paused: true,
             notif_sent: false,
             tokio_runtime: Runtime::new()?,
+            hour_input: String::new(),
+            min_input: String::new(),
+            sec_input: String::new(),
         })
     }
 
@@ -30,5 +38,13 @@ impl AppData {
         } else {
             new_progress
         };
+    }
+
+    pub(crate) fn set_new_duration(&mut self, new_duration: Duration) {
+        self.total = new_duration;
+
+        if self.progress > new_duration {
+            self.progress = new_duration;
+        }
     }
 }
