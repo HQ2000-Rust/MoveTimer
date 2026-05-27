@@ -1,6 +1,6 @@
 use xilem::{
     WidgetView,
-    view::{GridExt, grid, text_button, text_input},
+    view::{GridElement, GridExt, GridParams, grid, text_button, text_input},
 };
 
 use crate::{
@@ -38,7 +38,7 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                 1,
                 3,
             )
-            .grid_pos(0, 0),
+            .grid_item(GridParams::new(0, 0, 1, 1)),
             grid(
                 (
                     text_button("Reset", |data: &mut AppData| {
@@ -67,7 +67,7 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                                     .unwrap_or(0),
                             ),
                     )
-                    .grid_pos(0, 0),
+                    .grid_item(GridParams::new(0, 0, 1, 1)),
                     text_button("Apply", |data: &mut AppData| {
                         let new_duration = duration_from_secs_mins_hours(
                             //just to be safe, maybe remove later (TODO: e. g. a u64 field `input_secs`)
@@ -105,11 +105,15 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                                     .parse()
                                     .unwrap_or(0),
                             ),
-                    ),
+                    )
+                    .grid_item(GridParams::new(0, 1, 1, 1)),
                 ),
                 1,
                 2,
-            ),
+            )
+            .grid_item(GridParams::new(1, 0, 1, 1)),
+
+            
         ),
         2,
         1,
