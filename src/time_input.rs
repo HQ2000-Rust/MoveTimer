@@ -1,5 +1,6 @@
 use xilem::{
-    WidgetView, masonry::properties::types::AsUnit, style::Style, view::{CrossAxisAlignment, FlexExt, FlexParams, GridExt, GridParams, flex_row, grid, label, text_button, text_input}
+    WidgetView,
+    view::{GridExt, GridParams, grid, label, text_button, text_input},
 };
 
 use crate::{
@@ -13,8 +14,8 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
         (
             grid(
                 (
-                    flex_row(
-                    (
+                    grid(
+                        (
                             text_input(
                                 data.sec_input.clone(),
                                 |data: &mut AppData, new_content: String| {
@@ -23,13 +24,15 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                                     //0 if it's an empty string or overflow
                                     data.sec_parsed = data.sec_input.as_str().parse().unwrap_or(0);
                                 },
-                            ).flex(FlexParams::new(1., CrossAxisAlignment::Fill)),
-                            
-                            label("s").text_size(30.),
-                    )
+                            )
+                            .grid_pos(0, 0),
+                            label("s").text_size(30.).grid_pos(1, 0),
+                        ),
+                        2,
+                        1,
                     )
                     .grid_pos(0, 0),
-                    flex_row(
+                    grid(
                         (
                             text_input(
                                 data.min_input.clone(),
@@ -40,14 +43,14 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                                     data.min_parsed = data.min_input.as_str().parse().unwrap_or(0);
                                 },
                             )
-                            .flex(FlexParams::new(1., CrossAxisAlignment::Fill)),
-                            
-                            label("m").text_size(30.),
+                            .grid_pos(0, 0),
+                            label("m").text_size(30.).grid_pos(1, 0),
                         ),
-                        
+                        2,
+                        1,
                     )
                     .grid_pos(0, 1),
-                    flex_row(
+                    grid(
                         (
                             text_input(
                                 data.hour_input.clone(),
@@ -59,11 +62,11 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                                         data.hour_input.as_str().parse().unwrap_or(0);
                                 },
                             )
-                            .flex(FlexParams::new(1., CrossAxisAlignment::Fill)),
-                            
-                            label("s").text_size(30.),
+                            .grid_pos(0, 0),
+                            label("h").text_size(30.).grid_pos(1, 0),
                         ),
-                     
+                        2,
+                        1,
                     )
                     .grid_pos(0, 2),
                 ),
