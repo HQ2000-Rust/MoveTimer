@@ -10,7 +10,11 @@ use xilem::masonry::vello::wgpu::wgt::error;
 
 use crate::utils::format_as_secs_minutes_and_hours;
 
-pub(crate) async fn move_notif(duration_elapsed: Duration) -> notify_rust::error::Result<()> {
+//TODO: proper gating according to the docs
+pub(crate) async fn move_notif(
+    duration_elapsed: Duration,
+    settings: NotifSettings,
+) -> notify_rust::error::Result<()> {
     let body = format!(
         "Move a bit!\n({} elapsed)",
         format_as_secs_minutes_and_hours(duration_elapsed)
@@ -18,13 +22,18 @@ pub(crate) async fn move_notif(duration_elapsed: Duration) -> notify_rust::error
 
     let mut notif = Notification::new();
 
-    notif
-        .summary("Time to move!")
-        .body(body.as_str())
-        .timeout(Duration::from_secs(10));
+    notif.summary("Time to move!").body(body.as_str());
 
     #[cfg(not(target_os = "macos"))]
-    notif.urgency(notify_rust::Urgency::Critical);
+    {
+        notif.timeout(settings.duration);
+
+        if let Some(name) = settings.sound_name {
+            notif.sound_name(name.as_str());
+        }
+
+        notif.urgency(notify_rust::Urgency::Critical);
+    }
 
     #[cfg(target_os = "macos")]
     notif.schedule(Utc::now());
@@ -35,4 +44,21 @@ pub(crate) async fn move_notif(duration_elapsed: Duration) -> notify_rust::error
     handle.on_close(|reason| info!("closed: {:?}", reason));
 
     Ok(())
+}
+
+//non-persistent notif settings
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct NotifSettings {
+    pub(crate) duration: Duration,
+
+    pub(crate) sound_name: Option<String>,
+}
+
+impl Default for NotifSettings {
+    fn default() -> Self {
+        NotifSettings {
+            duration: Duration::from_mins(1),
+            sound_name: None,
+        }
+    }
 }
