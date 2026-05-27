@@ -1,6 +1,5 @@
 use xilem::{
-    WidgetView,
-    view::{GridExt, GridParams, grid, text_button, text_input},
+    WidgetView, masonry::properties::types::AsUnit, style::Style, view::{CrossAxisAlignment, FlexExt, FlexParams, GridExt, GridParams, flex_row, grid, label, text_button, text_input}
 };
 
 use crate::{
@@ -14,35 +13,57 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
         (
             grid(
                 (
-                    //TODO: labels!!
-                    text_input(
-                        data.sec_input.clone(),
-                        |data: &mut AppData, new_content: String| {
-                            data.sec_input = keep_numbers(new_content);
+                    flex_row(
+                    (
+                            text_input(
+                                data.sec_input.clone(),
+                                |data: &mut AppData, new_content: String| {
+                                    data.sec_input = keep_numbers(new_content);
 
-                            //0 if it's an empty string or overflow
-                            data.sec_parsed = data.sec_input.as_str().parse().unwrap_or(0);
-                        },
+                                    //0 if it's an empty string or overflow
+                                    data.sec_parsed = data.sec_input.as_str().parse().unwrap_or(0);
+                                },
+                            ).flex(FlexParams::new(1., CrossAxisAlignment::Fill)),
+                            
+                            label("s").text_size(30.),
+                    )
                     )
                     .grid_pos(0, 0),
-                    text_input(
-                        data.min_input.clone(),
-                        |data: &mut AppData, new_content: String| {
-                            data.min_input = keep_numbers(new_content);
+                    flex_row(
+                        (
+                            text_input(
+                                data.min_input.clone(),
+                                |data: &mut AppData, new_content: String| {
+                                    data.min_input = keep_numbers(new_content);
 
-                            //0 if it's an empty string or overflow
-                            data.min_parsed = data.min_input.as_str().parse().unwrap_or(0);
-                        },
+                                    //0 if it's an empty string or overflow
+                                    data.min_parsed = data.min_input.as_str().parse().unwrap_or(0);
+                                },
+                            )
+                            .flex(FlexParams::new(1., CrossAxisAlignment::Fill)),
+                            
+                            label("m").text_size(30.),
+                        ),
+                        
                     )
                     .grid_pos(0, 1),
-                    text_input(
-                        data.hour_input.clone(),
-                        |data: &mut AppData, new_content: String| {
-                            data.hour_input = keep_numbers(new_content);
+                    flex_row(
+                        (
+                            text_input(
+                                data.hour_input.clone(),
+                                |data: &mut AppData, new_content: String| {
+                                    data.hour_input = keep_numbers(new_content);
 
-                            //0 if it's an empty string or overflow
-                            data.hour_parsed = data.hour_input.as_str().parse().unwrap_or(0);
-                        },
+                                    //0 if it's an empty string or overflow
+                                    data.hour_parsed =
+                                        data.hour_input.as_str().parse().unwrap_or(0);
+                                },
+                            )
+                            .flex(FlexParams::new(1., CrossAxisAlignment::Fill)),
+                            
+                            label("s").text_size(30.),
+                        ),
+                     
                     )
                     .grid_pos(0, 2),
                 ),
@@ -54,19 +75,15 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
             grid(
                 (
                     text_button("Reset", |data: &mut AppData| {
-                       // let (default_hours, default_mins, default_secs) =
-                       //     hours_mins_secs(DEFAULT_DURATION);
+                        // let (default_hours, default_mins, default_secs) =
+                        //     hours_mins_secs(DEFAULT_DURATION);
                         // data.sec_input = default_secs.to_string();
-                       // data.min_input = default_mins.to_string();
-                      //  data.hour_input = default_hours.to_string();
-                      // 
-                      data.set_new_duration(DEFAULT_DURATION);
+                        // data.min_input = default_mins.to_string();
+                        //  data.hour_input = default_hours.to_string();
+                        //
+                        data.set_new_duration(DEFAULT_DURATION);
                     })
-                    .disabled(
-                        DEFAULT_DURATION
-                        
-                            == data.total,
-                    )
+                    .disabled(DEFAULT_DURATION == data.total)
                     .grid_item(GridParams::new(0, 0, 1, 1)),
                     text_button("Apply", |data: &mut AppData| {
                         data.set_new_duration(data.input_duration());
