@@ -8,6 +8,7 @@ use crate::{
     utils::hours_mins_secs,
 };
 
+//TODO: decide how to handle the Duration::ZERO (user input) case, atm possibly inconsistent output: "resume" + "reset"
 pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
     grid(
         (
