@@ -1,11 +1,11 @@
 use xilem::{
     WidgetView,
-    view::{GridElement, GridExt, GridParams, grid, text_button, text_input},
+    view::{GridExt, GridParams, grid, text_button, text_input},
 };
 
 use crate::{
     data::{AppData, DEFAULT_DURATION},
-    utils::{duration_from_secs_mins_hours, hours_mins_secs},
+    utils::hours_mins_secs,
 };
 
 pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
@@ -13,10 +13,14 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
         (
             grid(
                 (
+                    //TODO: labels!!
                     text_input(
                         data.sec_input.clone(),
                         |data: &mut AppData, new_content: String| {
                             data.sec_input = keep_numbers(new_content);
+
+                            //0 if it's an empty string or overflow
+                            data.sec_parsed = data.sec_input.as_str().parse().unwrap_or(0);
                         },
                     )
                     .grid_pos(0, 0),
@@ -24,6 +28,9 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                         data.min_input.clone(),
                         |data: &mut AppData, new_content: String| {
                             data.min_input = keep_numbers(new_content);
+
+                            //0 if it's an empty string or overflow
+                            data.min_parsed = data.min_input.as_str().parse().unwrap_or(0);
                         },
                     )
                     .grid_pos(0, 1),
@@ -31,6 +38,9 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                         data.hour_input.clone(),
                         |data: &mut AppData, new_content: String| {
                             data.hour_input = keep_numbers(new_content);
+
+                            //0 if it's an empty string or overflow
+                            data.hour_parsed = data.hour_input.as_str().parse().unwrap_or(0);
                         },
                     )
                     .grid_pos(0, 2),
@@ -39,81 +49,34 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
                 3,
             )
             .grid_item(GridParams::new(0, 0, 1, 1)),
+            //different
             grid(
                 (
                     text_button("Reset", |data: &mut AppData| {
-                        let (default_hours, default_mins, default_secs) =
-                            hours_mins_secs(DEFAULT_DURATION);
-                        data.sec_input = default_secs.to_string();
-                        data.min_input = default_mins.to_string();
-                        data.hour_input = default_hours.to_string();
+                       // let (default_hours, default_mins, default_secs) =
+                       //     hours_mins_secs(DEFAULT_DURATION);
+                        // data.sec_input = default_secs.to_string();
+                       // data.min_input = default_mins.to_string();
+                      //  data.hour_input = default_hours.to_string();
+                      // 
+                      data.set_new_duration(DEFAULT_DURATION);
                     })
                     .disabled(
                         DEFAULT_DURATION
-                        //will need to refactor this...
-                            == duration_from_secs_mins_hours(
-                                //just to be safe, maybe remove later (TODO: e. g. a u64 field `input_secs`)
-                                keep_numbers(data.sec_input.clone())
-                                    .as_str()
-                                    .parse()
-                                    .unwrap_or(0),
-                                keep_numbers(data.min_input.clone())
-                                    .as_str()
-                                    .parse()
-                                    .unwrap_or(0),
-                                keep_numbers(data.hour_input.clone())
-                                    .as_str()
-                                    .parse()
-                                    .unwrap_or(0),
-                            ),
+                        
+                            == data.total,
                     )
                     .grid_item(GridParams::new(0, 0, 1, 1)),
                     text_button("Apply", |data: &mut AppData| {
-                        let new_duration = duration_from_secs_mins_hours(
-                            //just to be safe, maybe remove later (TODO: e. g. a u64 field `input_secs`)
-                            keep_numbers(data.sec_input.clone())
-                                .as_str()
-                                .parse()
-                                .unwrap_or(0),
-                            keep_numbers(data.min_input.clone())
-                                .as_str()
-                                .parse()
-                                .unwrap_or(0),
-                            keep_numbers(data.hour_input.clone())
-                                .as_str()
-                                .parse()
-                                .unwrap_or(0),
-                        );
-
-                        data.set_new_duration(new_duration);
+                        data.set_new_duration(data.input_duration());
                     })
-                    .disabled(
-                        //well...
-                        data.total
-                            == duration_from_secs_mins_hours(
-                                //just to be safe, maybe remove later (TODO: e. g. a u64 field `input_secs`)
-                                keep_numbers(data.sec_input.clone())
-                                    .as_str()
-                                    .parse()
-                                    .unwrap_or(0),
-                                keep_numbers(data.min_input.clone())
-                                    .as_str()
-                                    .parse()
-                                    .unwrap_or(0),
-                                keep_numbers(data.hour_input.clone())
-                                    .as_str()
-                                    .parse()
-                                    .unwrap_or(0),
-                            ),
-                    )
+                    .disabled(data.total == data.input_duration())
                     .grid_item(GridParams::new(0, 1, 1, 1)),
                 ),
                 1,
                 2,
             )
             .grid_item(GridParams::new(1, 0, 1, 1)),
-
-            
         ),
         2,
         1,
