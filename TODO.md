@@ -1,0 +1,4 @@
+- time input normalization
+- Settings
+  - notif params
+  - 
