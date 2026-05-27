@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use xilem::tokio::runtime::Runtime;
 
-use crate::utils::duration_from_secs_mins_hours;
+use crate::{notif::NotifSettings, utils::duration_from_secs_mins_hours};
 
 pub(crate) const DEFAULT_DURATION: Duration = Duration::from_mins(15);
 
@@ -19,6 +19,8 @@ pub(crate) struct AppData {
     pub(crate) min_parsed: u64,
     pub(crate) sec_input: String,
     pub(crate) sec_parsed: u64,
+    pub(crate) settings: NotifSettings,
+    pub(crate) input_settings: NotifSettings,
 }
 
 impl AppData {
@@ -36,6 +38,8 @@ impl AppData {
             min_parsed: 0,
             sec_input: String::new(),
             sec_parsed: 0,
+            settings: NotifSettings::default(),
+            input_settings: NotifSettings::default(),
         })
     }
 
