@@ -1,4 +1,6 @@
 - time input normalization
 - Settings
   - notif params
-  - 
+    - sound name
+    - duration (aka timeout)
+    - gate it
