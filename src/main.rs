@@ -19,6 +19,7 @@ pub(crate) mod utils;
 
 use data::AppData;
 
+use crate::time_input::time_input;
 use crate::time_view::time_view;
 
 const TICK: Duration = Duration::from_millis(100);
@@ -65,6 +66,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                     },
                 )
                 .grid_item(GridParams::new(0, 7, 3, 1)),
+                time_input(data).grid_item(GridParams::new(0, 3, 2, 1)),
             ),
             3,
             8,
