@@ -1,7 +1,7 @@
 use xilem::{
-    TextAlign, WidgetView,
+    WidgetView,
     view::{
-        FlexExt, GridExt, GridParams, MainAxisAlignment, button, flex, flex_col, flex_row, grid, label, text_button, text_input, zstack
+        GridExt, GridParams, button,grid, label, text_input
     },
 };
 

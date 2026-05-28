@@ -2,14 +2,13 @@ use std::ops::Not;
 use std::time::Duration;
 
 use xilem::core::fork;
-use xilem::palette::css::{BLACK, WHITE};
-use xilem::style::{Background, Padding, Style};
+
+
 use xilem::view::{
-    FlexSpacer, GridExt, GridParams, Label, Task, button, flex, flex_col, grid, label, slider,
-    task, text_button, text_input,
+    GridExt, GridParams, button, grid, label, task,
 };
 use xilem::winit::error::EventLoopError;
-use xilem::{Color, EventLoop, FontWeight, TextAlign, WidgetView, WindowOptions, Xilem, tokio};
+use xilem::{EventLoop, FontWeight, TextAlign, WidgetView, WindowOptions, Xilem, tokio};
 
 pub(crate) mod data;
 pub(crate) mod notif;
@@ -30,8 +29,6 @@ const TICK: Duration = Duration::from_millis(100);
 enum Message {
     Tick,
 }
-
-const MAX_SECS_NOTIF_DURATION: u32 = 300;
 
 const BUTTON_TEXT_SIZE: f32 = 15.;
 

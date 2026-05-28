@@ -1,14 +1,11 @@
-use std::{sync::Arc, time::Duration};
+use std::time::Duration;
 
 use crate::{data::AppData, utils::format_as_secs_minutes_and_hours};
 use xilem::{
     TextAlign, WidgetView,
-    masonry::properties::types::Length,
-    palette::css::WHITE,
-    style::Style,
     view::{
-        Axis, FlexExt, FlexSpacer, GridExt, GridParams, ZStackExt, button, flex, flex_col,
-        flex_row, grid, label, progress_bar, text_button,
+        GridExt, GridParams,
+        grid, label, progress_bar,
     },
 };
 

@@ -3,10 +3,8 @@ use std::time::{Duration, Instant};
 #[cfg(target_os = "macos")]
 use chrono::{DateTime, Utc};
 use notify_rust::Notification;
-use tracing::error;
 #[cfg(not(any(target_os = "macos", target_os = "windows")))]
-use tracing::{info, instrument::WithSubscriber};
-use xilem::masonry::vello::wgpu::wgt::error;
+use tracing::info;
 
 use crate::utils::format_as_secs_minutes_and_hours;
 

@@ -1,4 +1,4 @@
-use std::{fmt::format, time::Duration};
+use std::time::Duration;
 
 use xilem::tokio::runtime::Runtime;
 

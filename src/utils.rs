@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use std::time::Duration;
 
 pub(crate) fn format_as_secs_minutes_and_hours(duration: Duration) -> String {
