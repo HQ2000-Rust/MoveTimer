@@ -30,7 +30,7 @@ enum Message {
     Tick,
 }
 
-const BUTTON_TEXT_SIZE: f32 = 15.;
+const BUTTON_TEXT_SIZE: f32 = 20.;
 
 fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
     fork(
