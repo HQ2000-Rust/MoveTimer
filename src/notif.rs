@@ -11,7 +11,6 @@ use crate::utils::format_as_secs_minutes_and_hours;
 //TODO: proper gating according to the docs
 pub(crate) async fn move_notif(
     duration_elapsed: Duration,
-    settings: NotifSettings,
 ) -> notify_rust::error::Result<()> {
     let body = format!(
         "Move a bit!\n({} elapsed)",
@@ -22,13 +21,14 @@ pub(crate) async fn move_notif(
 
     notif.summary("Time to move!").body(body.as_str());
 
-    #[cfg(not(target_os = "macos"))]
+    // XDG settings
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
     {
-        notif.timeout(settings.duration);
+        notif.timeout(Duration::from_secs(60));
 
-        if let Some(name) = settings.sound_name {
-            notif.sound_name(name.as_str());
-        }
+        
+        notif.sound_name("ping");
+        
 
         notif.urgency(notify_rust::Urgency::Critical);
     }
@@ -44,19 +44,3 @@ pub(crate) async fn move_notif(
     Ok(())
 }
 
-//non-persistent notif settings
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) struct NotifSettings {
-    pub(crate) duration: Duration,
-
-    pub(crate) sound_name: Option<String>,
-}
-
-impl Default for NotifSettings {
-    fn default() -> Self {
-        NotifSettings {
-            duration: Duration::from_mins(1),
-            sound_name: None,
-        }
-    }
-}

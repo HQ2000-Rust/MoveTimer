@@ -133,7 +133,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
 
                             let _result = data
                                 .tokio_runtime
-                                .spawn(notif::move_notif(data.total, data.settings.clone()));
+                                .spawn(notif::move_notif(data.total));
                             data.notif_sent = true;
                         }
                     }
