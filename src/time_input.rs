@@ -1,111 +1,104 @@
 use xilem::{
-    WidgetView,
-    view::{GridExt, GridParams, grid, label, text_button, text_input},
+    TextAlign, WidgetView,
+    view::{
+        FlexExt, GridExt, GridParams, MainAxisAlignment, button, flex, flex_col, flex_row, grid, label, text_button, text_input, zstack
+    },
 };
 
 use crate::{
-    data::{AppData, DEFAULT_DURATION},
-    utils::hours_mins_secs,
+    BUTTON_TEXT_SIZE, data::{AppData, DEFAULT_DURATION}, utils::{format_as_secs_minutes_and_hours, hours_mins_secs}
 };
+
+const S_M_H_TEXT_SIZE: f32 = 20.;
 
 //TODO: decide how to handle the Duration::ZERO (user input) case, atm possibly inconsistent output: "resume" + "reset"
 pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
     grid(
         (
+            //flex_row((
             grid(
                 (
-                    grid(
-                        (
-                            text_input(
-                                data.sec_input.clone(),
-                                |data: &mut AppData, new_content: String| {
-                                    data.sec_input = keep_numbers(new_content);
+                    text_input(
+                        data.hour_input.clone(),
+                        |data: &mut AppData, new_content: String| {
+                            let mut numbers = keep_digits(new_content);
 
-                                    //0 if it's an empty string or overflow
-                                    data.sec_parsed = data.sec_input.as_str().parse().unwrap_or(0);
-                                },
-                            )
-                            .grid_pos(0, 0),
-                            label("s").text_size(30.).grid_pos(1, 0),
-                        ),
-                        2,
-                        1,
-                    )
-                    .grid_pos(0, 0),
-                    grid(
-                        (
-                            text_input(
-                                data.min_input.clone(),
-                                |data: &mut AppData, new_content: String| {
-                                    data.min_input = keep_numbers(new_content);
+                            //0 if it's an empty string or overflow
+                            data.hour_parsed = numbers.as_str().parse().unwrap_or(0);
 
-                                    //0 if it's an empty string or overflow
-                                    data.min_parsed = data.min_input.as_str().parse().unwrap_or(0);
-                                },
-                            )
-                            .grid_pos(0, 0),
-                            label("m").text_size(30.).grid_pos(1, 0),
-                        ),
-                        2,
-                        1,
+                            if !numbers.is_empty() {
+                                numbers.push('h');
+                            }
+                            data.hour_input = numbers;
+                        },
                     )
-                    .grid_pos(0, 1),
-                    grid(
-                        (
-                            text_input(
-                                data.hour_input.clone(),
-                                |data: &mut AppData, new_content: String| {
-                                    data.hour_input = keep_numbers(new_content);
+                    .grid_item(GridParams::new(0, 0, 1, 1)),
+                    text_input(
+                        data.min_input.clone(),
+                        |data: &mut AppData, new_content: String| {
+                            let mut numbers = keep_digits(new_content);
 
-                                    //0 if it's an empty string or overflow
-                                    data.hour_parsed =
-                                        data.hour_input.as_str().parse().unwrap_or(0);
-                                },
-                            )
-                            .grid_pos(0, 0),
-                            label("h").text_size(30.).grid_pos(1, 0),
-                        ),
-                        2,
-                        1,
+                            //0 if it's an empty string or overflow
+                            data.min_parsed = numbers.as_str().parse().unwrap_or(0);
+
+                            if !numbers.is_empty() {
+                                numbers.push('m');
+                            }
+                            data.min_input = numbers;
+                        },
                     )
-                    .grid_pos(0, 2),
+                    .grid_item(GridParams::new(0, 1, 1, 1)),
+                    text_input(
+                        data.sec_input.clone(),
+                        |data: &mut AppData, new_content: String| {
+                            let mut numbers = keep_digits(new_content);
+
+                            //0 if it's an empty string or overflow
+                            data.sec_parsed = numbers.as_str().parse().unwrap_or(0);
+
+                            if !numbers.is_empty() {
+                                numbers.push('s');
+                            }
+                            data.sec_input = numbers;
+                        },
+                    )
+                    .grid_item(GridParams::new(0, 2, 1, 1)),
                 ),
                 1,
                 3,
             )
-            .grid_item(GridParams::new(0, 0, 1, 1)),
-            //different
+            /* .flex(3.),
             grid(
                 (
-                    text_button("Reset", |data: &mut AppData| {
-                        // let (default_hours, default_mins, default_secs) =
-                        //     hours_mins_secs(DEFAULT_DURATION);
-                        // data.sec_input = default_secs.to_string();
-                        // data.min_input = default_mins.to_string();
-                        //  data.hour_input = default_hours.to_string();
-                        //
-                        data.set_new_duration(DEFAULT_DURATION);
-                    })
-                    .disabled(DEFAULT_DURATION == data.total)
-                    .grid_item(GridParams::new(0, 0, 1, 1)),
-                    text_button("Apply", |data: &mut AppData| {
-                        data.set_new_duration(data.input_duration());
-                    })
-                    .disabled(data.total == data.input_duration())
-                    .grid_item(GridParams::new(0, 1, 1, 1)),
+                    label("s")
+                        .text_size(S_M_H_TEXT_SIZE)
+                        //.text_alignment(TextAlign::End)
+                        .grid_pos(0, 0),
+                    label("m").text_size(S_M_H_TEXT_SIZE).grid_pos(0, 1),
+                    label("h").text_size(S_M_H_TEXT_SIZE).grid_pos(0, 2),
                 ),
                 1,
-                2,
+                3,
             )
-            .grid_item(GridParams::new(1, 0, 1, 1)),
+            */
+            //.flex(0.5)
+            //))
+            // .main_axis_alignment(MainAxisAlignment::SpaceAround)
+            //.must_fill_major_axis(true)
+            .grid_item(GridParams::new(0, 0, 1, 1)),
+            button(label("Apply").text_size(BUTTON_TEXT_SIZE), |data: &mut AppData| {
+                data.set_new_duration(data.input_duration());
+            })
+            .disabled(data.total == data.input_duration())
+            .grid_item(GridParams::new(0, 1, 1, 1)),
         ),
-        2,
         1,
+        2,
     )
 }
 
 //extremely efficient
-fn keep_numbers(input: String) -> String {
+fn keep_digits(input: String) -> String {
     let mut output = String::new();
 
     for character in input.chars() {

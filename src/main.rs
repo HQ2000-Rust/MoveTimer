@@ -9,7 +9,7 @@ use xilem::view::{
     task, text_button, text_input,
 };
 use xilem::winit::error::EventLoopError;
-use xilem::{EventLoop, TextAlign, WidgetView, WindowOptions, Xilem, tokio};
+use xilem::{Color, EventLoop, FontWeight, TextAlign, WidgetView, WindowOptions, Xilem, tokio};
 
 pub(crate) mod data;
 pub(crate) mod notif;
@@ -19,8 +19,10 @@ pub(crate) mod utils;
 
 use data::AppData;
 
+use crate::data::DEFAULT_DURATION;
 use crate::time_input::time_input;
 use crate::time_view::time_view;
+use crate::utils::format_as_secs_minutes_and_hours;
 
 const TICK: Duration = Duration::from_millis(100);
 
@@ -31,6 +33,8 @@ enum Message {
 
 const MAX_SECS_NOTIF_DURATION: u32 = 300;
 
+const BUTTON_TEXT_SIZE: f32 = 15.;
+
 fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
     fork(
         grid(
@@ -38,6 +42,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                 label("MoveTimer")
                     .text_alignment(TextAlign::Center)
                     .text_size(60.)
+                    .weight(FontWeight::parse("bold").unwrap())
                     .grid_item(GridParams::new(0, 0, 3, 1)),
                 time_view(data.total, data.progress).grid_item(GridParams::new(0, 1, 3, 1)),
                 button(
@@ -46,7 +51,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                         (_, true) => "Reset",
                         (false, false) => "Pause",
                     })
-                    .text_size(20.),
+                    .text_size(25.),
                     |data_: &mut AppData| {
                         match (data_.paused, data_.total == data_.progress) {
                             (false, true) => {
@@ -67,30 +72,48 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                         };
                     },
                 )
-                .grid_item(GridParams::new(0, 7, 3, 1)),
-                time_input(data).grid_item(GridParams::new(0, 3, 2, 1)),
-                text_button("reset time", |data: &mut AppData| {
-                    data.progress = Duration::ZERO;
-                }),
-                //timeout only on xdg desktops
-                /*slider(
-                    0.,
-                    MAX_SECS_NOTIF_DURATION as f64,
-                    data.input_settings.duration.as_secs() as f64,
-                    |data: &mut AppData, new_val| {
-                        // Duration::from_secs_f64 sadly not stable yet
-                        data.input_settings.duration = Duration::from_secs(new_val as u64);
+                .grid_item(GridParams::new(0, 4, 3, 1)),
+                time_input(data).grid_pos(0, 3),
+                button(
+                    label("Set elapsed time to 0")
+                       // .text_alignment(TextAlign::Justify)
+                        .text_size(BUTTON_TEXT_SIZE),
+                    |data: &mut AppData| {
+                        data.progress = Duration::ZERO;
                     },
                 )
-                .grid_item(GridParams::new(2, 5, 2, 1)),
-                label(data.input_settings.duration.as_secs().to_string()).grid_pos(2, 6),
-                text_button("apply notif settings", |data: &mut AppData| {
-                    data.settings = data.input_settings.clone();
-                })
-                .disabled(data.settings == data.input_settings),*/
+                .grid_pos(1, 3),
+                button(
+                    label(format!(
+                        "Reset to default ({})",
+                        format_as_secs_minutes_and_hours(DEFAULT_DURATION)
+                    ))
+                    //.text_alignment(TextAlign::Justify),
+                    .text_size(BUTTON_TEXT_SIZE),
+                    |data: &mut AppData| {
+                        data.set_new_duration(DEFAULT_DURATION);
+                    },
+                )
+                .disabled(DEFAULT_DURATION == data.total)
+                .grid_pos(2, 3), //timeout only on xdg desktops
+                                 /*slider(
+                                     0.,
+                                     MAX_SECS_NOTIF_DURATION as f64,
+                                     data.input_settings.duration.as_secs() as f64,
+                                     |data: &mut AppData, new_val| {
+                                         // Duration::from_secs_f64 sadly not stable yet
+                                         data.input_settings.duration = Duration::from_secs(new_val as u64);
+                                     },
+                                 )
+                                 .grid_item(GridParams::new(2, 5, 2, 1)),
+                                 label(data.input_settings.duration.as_secs().to_string()).grid_pos(2, 6),
+                                 text_button("apply notif settings", |data: &mut AppData| {
+                                     data.settings = data.input_settings.clone();
+                                 })
+                                 .disabled(data.settings == data.input_settings),*/
             ),
             3,
-            8,
+            5,
         ),
         // FIXME: always ticking, even when finished/pausing
         // clean solution?
@@ -126,7 +149,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
 fn main() -> Result<(), EventLoopError> {
     let app = Xilem::new_simple(
         //TODO: gracefully handle the error(s)
-        AppData::new(Duration::from_secs(2)).unwrap(),
+        AppData::new(DEFAULT_DURATION).unwrap(),
         app_logic,
         WindowOptions::new("MoveTimer"),
     );

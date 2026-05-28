@@ -1,8 +1,11 @@
-use std::time::Duration;
+use std::{fmt::format, time::Duration};
 
 use xilem::tokio::runtime::Runtime;
 
-use crate::{notif::NotifSettings, utils::duration_from_secs_mins_hours};
+use crate::{
+    notif::NotifSettings,
+    utils::{duration_from_secs_mins_hours, hours_mins_secs},
+};
 
 pub(crate) const DEFAULT_DURATION: Duration = Duration::from_mins(15);
 
@@ -25,19 +28,20 @@ pub(crate) struct AppData {
 
 impl AppData {
     pub(crate) fn new(duration: Duration) -> std::io::Result<AppData> {
+        let (default_hour, default_min, default_sec) = hours_mins_secs(duration);
+
         Ok(AppData {
             progress: Duration::ZERO,
             total: duration,
             paused: true,
             notif_sent: false,
             tokio_runtime: Runtime::new()?,
-            hour_input: String::new(),
-            hour_parsed: 0,
-            min_input: String::new(),
-
-            min_parsed: 0,
-            sec_input: String::new(),
-            sec_parsed: 0,
+            hour_input: format!("{}h", default_hour),
+            hour_parsed: default_hour,
+            min_input: format!("{}m", default_min),
+            min_parsed: default_min as u64,
+            sec_input: format!("{}s", default_sec),
+            sec_parsed: default_sec as u64,
             settings: NotifSettings::default(),
             input_settings: NotifSettings::default(),
         })
