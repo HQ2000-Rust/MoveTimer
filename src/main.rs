@@ -3,10 +3,7 @@ use std::time::Duration;
 
 use xilem::core::fork;
 
-
-use xilem::view::{
-    GridExt, GridParams, button, grid, label, task,
-};
+use xilem::view::{GridExt, GridParams, button, grid, label, task};
 use xilem::winit::error::EventLoopError;
 use xilem::{EventLoop, FontWeight, TextAlign, WidgetView, WindowOptions, Xilem, tokio};
 
@@ -73,7 +70,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                 time_input(data).grid_pos(0, 3),
                 button(
                     label("Set elapsed time to 0")
-                       // .text_alignment(TextAlign::Justify)
+                        // .text_alignment(TextAlign::Justify)
                         .text_size(BUTTON_TEXT_SIZE),
                     |data: &mut AppData| {
                         data.progress = Duration::ZERO;
@@ -131,9 +128,7 @@ fn app_logic(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
                         if data.total == data.progress && !data.notif_sent {
                             //TODO: resend if an error occurs?
 
-                            let _result = data
-                                .tokio_runtime
-                                .spawn(notif::move_notif(data.total));
+                            let _result = data.tokio_runtime.spawn(notif::move_notif(data.total));
                             data.notif_sent = true;
                         }
                     }

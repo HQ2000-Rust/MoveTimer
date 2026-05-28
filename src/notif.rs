@@ -9,9 +9,7 @@ use tracing::info;
 use crate::utils::format_as_secs_minutes_and_hours;
 
 //TODO: proper gating according to the docs
-pub(crate) async fn move_notif(
-    duration_elapsed: Duration,
-) -> notify_rust::error::Result<()> {
+pub(crate) async fn move_notif(duration_elapsed: Duration) -> notify_rust::error::Result<()> {
     let body = format!(
         "Move a bit!\n({} elapsed)",
         format_as_secs_minutes_and_hours(duration_elapsed)
@@ -26,9 +24,7 @@ pub(crate) async fn move_notif(
     {
         notif.timeout(Duration::from_secs(60));
 
-        
         notif.sound_name("ping");
-        
 
         notif.urgency(notify_rust::Urgency::Critical);
     }
@@ -43,4 +39,3 @@ pub(crate) async fn move_notif(
 
     Ok(())
 }
-

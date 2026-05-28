@@ -1,15 +1,9 @@
 use xilem::{
     WidgetView,
-    view::{
-        GridExt, GridParams, button,grid, label, text_input
-    },
+    view::{GridExt, GridParams, button, grid, label, text_input},
 };
 
-use crate::{
-    BUTTON_TEXT_SIZE, data::{AppData, DEFAULT_DURATION}, utils::{format_as_secs_minutes_and_hours, hours_mins_secs}
-};
-
-const S_M_H_TEXT_SIZE: f32 = 20.;
+use crate::{BUTTON_TEXT_SIZE, data::AppData};
 
 //TODO: decide how to handle the Duration::ZERO (user input) case, atm possibly inconsistent output: "resume" + "reset"
 pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<> {
@@ -86,9 +80,12 @@ pub(crate) fn time_input(data: &mut AppData) -> impl WidgetView<AppData> + use<>
             // .main_axis_alignment(MainAxisAlignment::SpaceAround)
             //.must_fill_major_axis(true)
             .grid_item(GridParams::new(0, 0, 1, 1)),
-            button(label("Apply").text_size(BUTTON_TEXT_SIZE), |data: &mut AppData| {
-                data.set_new_duration(data.input_duration());
-            })
+            button(
+                label("Apply").text_size(BUTTON_TEXT_SIZE),
+                |data: &mut AppData| {
+                    data.set_new_duration(data.input_duration());
+                },
+            )
             .disabled(data.total == data.input_duration())
             .grid_item(GridParams::new(0, 1, 1, 1)),
         ),

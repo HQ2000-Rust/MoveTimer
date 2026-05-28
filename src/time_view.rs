@@ -3,10 +3,7 @@ use std::time::Duration;
 use crate::{data::AppData, utils::format_as_secs_minutes_and_hours};
 use xilem::{
     TextAlign, WidgetView,
-    view::{
-        GridExt, GridParams,
-        grid, label, progress_bar,
-    },
+    view::{GridExt, GridParams, grid, label, progress_bar},
 };
 
 pub(crate) fn time_view(total: Duration, progress: Duration) -> impl WidgetView<AppData> + use<> {

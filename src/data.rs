@@ -2,9 +2,7 @@ use std::time::Duration;
 
 use xilem::tokio::runtime::Runtime;
 
-use crate::{
-    utils::{duration_from_secs_mins_hours, hours_mins_secs},
-};
+use crate::utils::{duration_from_secs_mins_hours, hours_mins_secs};
 
 pub(crate) const DEFAULT_DURATION: Duration = Duration::from_mins(15);
 
