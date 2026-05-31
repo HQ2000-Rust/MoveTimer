@@ -33,7 +33,7 @@ pub(crate) async fn move_notif(duration_elapsed: Duration) -> notify_rust::error
     notif.schedule(Utc::now());
 
     // the handle could be used for actions, but there aren't any at the moment
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    //#[cfg(not(any(target_os = "macos", target_os = "windows")))]
     let handle = notif.show_async().await?;
     handle.on_close(|reason| info!("closed: {:?}", reason));
 
